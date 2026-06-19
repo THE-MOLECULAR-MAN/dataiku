@@ -10,8 +10,10 @@ Public repository for presales engineering for Dataiku products
 - [Sandbox Dataiku DSS instance with many example projects to explore](https://gallery.dataiku.com/)
 - [Dataiku product training & certification](https://academy.dataiku.com/)
 - [Dataiku downloads - Fleet Manager, plugins, etc](https://downloads.dataiku.com/public/)
-- [Official GitHub repo for Dataiku plugins](https://github.com/dataiku/dataiku-contrib)
+- [DSS Plugins - primary repository](https://github.com/dataiku/dataiku-contrib)
+- [DSS Plugins - all public repositories](https://github.com/orgs/dataiku/repositories?q=visibility%3Apublic+archived%3Afalse+dss-plugin-)
 - [All official Dataiku public GitHub repositories](https://github.com/orgs/dataiku/repositories)
+- [Dataiku Community](https://community.dataiku.com/)
 
 
 # Third party (Non-Dataiku) resources:
