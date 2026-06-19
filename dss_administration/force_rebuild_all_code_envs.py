@@ -34,9 +34,10 @@ def human_readable_size(size_bytes: float) -> str:
 
 def _process_code_env(code_env_info: dict) -> None:
     """Rebuild one code environment from scratch and accumulate before/after disk sizes."""
+    env_client = dataiku.api_client()
     env_name = code_env_info["envName"]
     try:
-        code_env = client.get_code_env(code_env_info["envLang"], env_name)
+        code_env = env_client.get_code_env(code_env_info["envLang"], env_name)
         print(f"Starting rebuild of {env_name} ...")
         # Update this path to match your DSS data directory (typically DSS_DATA_DIR/code-envs/python).
         env_path = os.path.join("/data/dataiku/dss_data/code-envs/python", env_name)

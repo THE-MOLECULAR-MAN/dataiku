@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Iterates all git-tracked DSS project directories and pushes each to its remote.
 # set -e is intentionally omitted so one failing repo does not abort the entire run.
-# Tim H 2021
 set -uo pipefail
 
+# Replace with the path to the DSS projects configuration directory on your instance.
 PATH_TO_REPOS="$HOME/DSS_DATA_DIR/config/projects"
 
 if [ ! -d "$PATH_TO_REPOS" ]; then

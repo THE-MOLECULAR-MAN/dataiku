@@ -10,9 +10,10 @@ import dataiku
 
 client = dataiku.api_client()
 
-# Managed folder containing the project ZIP archives to import.
-# Update this ID to match your target folder.
-folder_handle = dataiku.Folder("5fuFDP0G")
+# Replace with the managed folder ID containing the project ZIP archives to import.
+IMPORT_FOLDER_ID = "5fuFDP0G"
+
+folder_handle = dataiku.Folder(IMPORT_FOLDER_ID)
 
 zip_files = [f for f in folder_handle.list_paths_in_partition() if f.endswith(".zip")]
 

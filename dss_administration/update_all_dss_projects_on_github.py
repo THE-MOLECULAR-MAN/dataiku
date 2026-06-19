@@ -1,12 +1,11 @@
-# update_all_dss_projects_on_github.py
-# Tim H 2025
-#
-# Iterates all projects on this DSS instance and pushes commits to GitHub
-# for any project connected to a remote. Intended to run as a scheduled scenario.
-#
-# References:
-#   https://developer.dataiku.com/latest/tutorials/devtools/using-api-with-git-project/index.html
-#   https://developer.dataiku.com/latest/api-reference/python/projects.html#dataikuapi.dss.project.DSSProjectGit.get_remote
+"""Iterate all projects on this DSS instance and push commits to GitHub for any project connected to a remote.
+
+Intended to run as a scheduled scenario.
+
+References:
+    https://developer.dataiku.com/latest/tutorials/devtools/using-api-with-git-project/index.html
+    https://developer.dataiku.com/latest/api-reference/python/projects.html#dataikuapi.dss.project.DSSProjectGit.get_remote
+"""
 
 import dataiku
 
