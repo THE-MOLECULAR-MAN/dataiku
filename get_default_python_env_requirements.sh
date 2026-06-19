@@ -1,8 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# This script is intended to be run on a DSS instance to capture the default Python environment's packages.
-# It will write the list of installed packages to ~/dss_default_requirements.txt
+# Captures the default DSS Python environment's installed packages to ~/dss_default_requirements.txt.
+# Run on the DSS host as the service account user.
 
+# Replace with your DSS installation directory (the directory containing dss_data/).
 DSS_INSTALL_DIR="/data/dataiku"
 DSS_PYENV="$DSS_INSTALL_DIR/dss_data/pyenv"
 
