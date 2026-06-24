@@ -91,6 +91,121 @@ If the task requires packages not listed above, state them explicitly and provid
 - **Plugin Development Guide**: https://knowledge.dataiku.com/latest/plugins/development/index.html
 - **Plugin Tutorials**: https://developer.dataiku.com/latest/tutorials/plugins/foreword.html
 
+# Common Patterns
+
+## Recipe Boilerplate
+
+Use `dataiku.get_input_names()` and `dataiku.get_output_names()` to retrieve dataset names from the flow wiring — never hardcode them. These functions return a list; index or iterate depending on how many inputs/outputs the recipe has.
+
+```python
+import dataiku
+
+# Single input, single output
+input_name = dataiku.get_input_names()[0]
+output_name = dataiku.get_output_names()[0]
+
+df = dataiku.Dataset(input_name).get_dataframe()
+
+# ... transform df ...
+
+dataiku.Dataset(output_name).write_with_schema(df)
+```
+
+For recipes with multiple inputs or outputs:
+
+```python
+inputs = {name: dataiku.Dataset(name) for name in dataiku.get_input_names()}
+outputs = {name: dataiku.Dataset(name) for name in dataiku.get_output_names()}
+```
+
+## Project Variables
+
+Project variables are the standard mechanism for parameterizing recipes and scenarios without hardcoding values. The variables dict has two keys: `"standard"` (project-level, shared across all runs) and `"local"` (local node overrides). Use `"standard"` unless you specifically need local overrides.
+
+```python
+import dataiku
+client = dataiku.api_client()
+project = client.get_default_project()
+
+# Read
+variables = project.get_variables()
+my_value = variables["standard"].get("my_key", "default")
+
+# Write
+variables["standard"]["my_key"] = "new_value"
+project.set_variables(variables)
+```
+
+## Scenario & Job Triggering
+
+From **outside a scenario** (external scripts, notebooks), use the `dataikuapi` project handle:
+
+```python
+import dataiku
+client = dataiku.api_client()
+project = client.get_default_project()
+
+# Fire-and-forget
+project.get_scenario("SCENARIO_ID").run()
+
+# Block until complete; raises on failure unless no_fail=True
+run = project.get_scenario("SCENARIO_ID").run_and_wait()
+```
+
+From **within a scenario Python step**, use `dataiku.scenario.Scenario`:
+
+```python
+from dataiku.scenario import Scenario
+
+scenario = Scenario()
+scenario.build_dataset("MY_OUTPUT_DATASET", wait=True)
+scenario.set_scenario_variables(my_key="new_value")
+```
+
+## LLM Mesh (DSS v13+)
+
+LLMs are accessed through the project handle. Use `project.list_llms()` to discover available LLM IDs rather than hardcoding them.
+
+```python
+import dataiku
+client = dataiku.api_client()
+project = client.get_default_project()
+
+llm = project.get_llm("your-llm-id")
+
+# Single completion
+completion = llm.new_completion()
+completion.with_message("Summarize this text.", role="user")
+response = completion.execute()
+print(response.text)
+
+# Adjust generation parameters
+completion.settings["temperature"] = 0.7
+completion.settings["maxOutputTokens"] = 1000
+
+# Multi-turn conversation
+followup = response.prepare_followup()
+followup.with_message("Make it shorter.", role="user")
+response2 = followup.execute()
+
+# Streaming
+for chunk in llm.new_completion().with_message("Hello").execute_streamed():
+    print(chunk.text, end="")
+
+# Structured JSON output
+completion.with_json_output()
+response = completion.execute()
+data = response.json  # parsed dict
+
+# Embeddings
+query = llm.new_embeddings()
+query.add_text("text to embed")
+vectors = query.execute().get_embeddings()
+
+# LangChain integration
+chat_model = llm.as_langchain_chat_model()
+```
+
 # Cautions
 
 ## 1. Dataset Classes — Use the Right One
@@ -165,6 +280,56 @@ for chunk_df in dataiku.Dataset("my_dataset").iter_dataframes(chunksize=50000):
 `write_with_schema()` may alter the dataset's schema. Only use it when schema creation or update is explicitly intended. If preserving an existing schema matters, validate column names, order, and types before writing.
 
 Be explicit about whether code will **overwrite** or **append** data. Never assume append behavior unless it is clearly supported and explicitly intended.
+
+## 9. `DatasetWriter` Must Be Closed
+
+`get_writer()` returns a writer that **must be closed** for data to be persisted. Always use it as a context manager so `close()` is guaranteed even if an exception occurs.
+
+`write_schema()` or `write_schema_from_dataframe()` must be called before `write_row_dict()` or `write_tuple()`. It is not required before `write_dataframe()`.
+
+```python
+output_ds = dataiku.Dataset("output")
+output_ds.write_schema_from_dataframe(df)   # set schema before row-by-row writes
+
+with output_ds.get_writer() as writer:
+    for row in rows:
+        writer.write_row_dict({"col1": row[0], "col2": row[1]})
+# close() is called automatically on context manager exit
+```
+
+## 10. `ignore_flow` — Recipe vs. Non-Recipe Contexts
+
+`dataiku.Dataset(name)` defaults to `ignore_flow=False`, which causes DSS to verify the dataset is declared as an input or output of the currently running recipe. This is the correct behavior in recipes.
+
+In notebooks, external scripts, or other non-recipe contexts, `ignore_flow=False` will raise an error. Use `ignore_flow=True` there — but **never** inside a recipe, where it would mask a real flow misconfiguration.
+
+```python
+# In a recipe — omit ignore_flow (default False is correct)
+ds = dataiku.Dataset("MY_DATASET")
+
+# In a notebook or external script
+ds = dataiku.Dataset("MY_DATASET", ignore_flow=True)
+```
+
+## 11. Partitioned Datasets
+
+Partitioning requires explicit API calls for both reading and writing. The format of a partition identifier depends on the partitioning scheme: time-based (`"2024-01-15"`), discrete (`"US"`), or combined (`"2024-01-15|US"`).
+
+```python
+ds = dataiku.Dataset("my_dataset")
+
+# Discover available partitions
+partitions = ds.list_partitions()
+
+# Read a specific partition
+ds.add_read_partitions("2024-01-15")
+df = ds.get_dataframe()
+
+# Write to a specific partition
+ds.set_write_partition("2024-01-15")
+with ds.get_writer() as writer:
+    writer.write_dataframe(chunk_df)
+```
 
 # Plugin Development
 
