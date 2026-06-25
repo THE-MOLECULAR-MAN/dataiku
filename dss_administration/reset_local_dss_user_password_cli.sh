@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # https://doc.dataiku.com/dss/latest/operations/dsscli.html#user-edit
