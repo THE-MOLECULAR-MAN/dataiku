@@ -1,7 +1,8 @@
 """Stops all running Code Studio instances across all projects, then rebuilds each without cache."""
 
-import dataiku
 import time
+
+import dataiku
 
 POLL_INTERVAL = 5  # seconds between instance-state checks
 STOPPED_STATES = frozenset({"STOPPED", "FAILED", "ERROR", "NONE", ""})
