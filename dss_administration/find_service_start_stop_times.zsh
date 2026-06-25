@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # Searches DSS log files for startup and shutdown events.
 set -euo pipefail
 
