@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 # Replace with the path to your DSS run directory (typically DSS_DATA_DIR/run).
