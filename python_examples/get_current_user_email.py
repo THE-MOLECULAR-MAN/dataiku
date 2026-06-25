@@ -32,4 +32,5 @@ def get_current_user_email() -> str | None:
     return email
 
 
-print(get_current_user_email())
+if __name__ == "__main__":
+    print(get_current_user_email())
