@@ -5,6 +5,7 @@
 set -uo pipefail
 
 # Replace with your installed PostgreSQL major version.
+# shellcheck disable=SC2034  # used in the manual config-file path shown in the comment below
 PSQL_VERSION="18"
 
 sudo -u postgres psql -t -c "show data_directory;"
