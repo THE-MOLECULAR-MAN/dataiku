@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 ROLE_NAME=$(aws sts get-caller-identity --query "Arn" --output text | cut -d'/' -f2)
