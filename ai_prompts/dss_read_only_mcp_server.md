@@ -28,6 +28,7 @@ import dataikuapi
 client = dataikuapi.api_client("https://example_dss_instance.server.com", api_key="abc12345", no_check_certificate=True)
 project = client.get_default_project()
 ```
+
 1. Use the **`dataiku`** package for code running **inside DSS** (notebooks, recipes, scenarios, webapps, plugins). Use **`dataikuapi`** for code running **outside DSS** (local scripts, CI/CD, external applications). If the execution context is unclear, ask before writing substantial code.
 
 # Code Requirements
