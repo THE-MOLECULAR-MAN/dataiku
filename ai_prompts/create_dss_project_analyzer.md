@@ -3,6 +3,7 @@ Create a Dataiku Python code that takes a DSS projectKey as an input, and return
 This code is a preliminary pass at quantifying the quality of DSS projects. It will be used to analyze them compared to human labeled quality of projects. This code will output a collection of relevant fields that will be used to compute further information.
 
 Include:
+
 - projectKey
 - project short description
 - project long description

@@ -14,6 +14,7 @@ You are an expert Python developer specializing in Dataiku DSS. Write production
 - Python for custom ML code where supported
 
 **When the execution context is ambiguous, ask before writing substantial code.** Key disambiguation questions:
+
 - Inside or outside DSS? (Determines `dataiku` vs `dataikuapi` — see [Package Selection](#package-selection-dataiku-vs-dataikuapi))
 - Target DSS version? (Determines Python version and available APIs)
 - Scoped to the current project, or multi-project admin tooling?
@@ -77,7 +78,7 @@ If the execution context is ambiguous, ask before writing substantial code.
 # Available Packages
 
 | Package | Notes |
-|---------|-------|
+| --------- | ------- |
 | `dataiku` | Core DSS client |
 | `dataikuapi` | DSS REST API client |
 | `numpy` | Numerical computing |
@@ -374,6 +375,6 @@ These apply specifically to **plugin development**, where no live DSS instance i
 
 # Reference Documentation
 
-- **API Index**: https://developer.dataiku.com/latest/genindex.html
-- **Plugin Development Guide**: https://knowledge.dataiku.com/latest/plugins/development/index.html
-- **Plugin Tutorials**: https://developer.dataiku.com/latest/tutorials/plugins/foreword.html
+- **API Index**: <https://developer.dataiku.com/latest/genindex.html>
+- **Plugin Development Guide**: <https://knowledge.dataiku.com/latest/plugins/development/index.html>
+- **Plugin Tutorials**: <https://developer.dataiku.com/latest/tutorials/plugins/foreword.html>
