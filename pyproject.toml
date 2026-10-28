@@ -1,0 +1,8 @@
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# BLE001: broad Exception catches are intentional in DSS admin/example scripts
+#         (API calls may fail per-item; scripts log and continue)
+# S110/S112: try-except-pass/continue patterns are intentional with explanatory comments
+ignore = ["BLE001", "S110", "S112"]

@@ -7,7 +7,7 @@ import mlflow
 import mlflow.sklearn
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_validate, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OneHotEncoder
 

@@ -36,7 +36,7 @@ for sm in project.list_saved_models():
         continue
     else:
         sm_id = sm["id"]
-        print("Found SavedModel {} with id {}".format(sm_name, sm_id))
+        print(f"Found SavedModel {sm_name} with id {sm_id}")
         break
 if sm_id:
     sm = project.get_saved_model(sm_id)
@@ -45,7 +45,7 @@ else:
         name=sm_name, prediction_type=DSSPredictionMLTaskSettings.PredictionTypes.BINARY
     )
     sm_id = sm.id
-    print("SavedModel not found, created new one with id {}".format(sm_id))
+    print(f"SavedModel not found, created new one with id {sm_id}")
 
 
 # Set version ID (a Saved Model can have multiple versions).

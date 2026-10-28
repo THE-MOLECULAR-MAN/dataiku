@@ -1,22 +1,20 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # In[1]:
 
 
+import copy
 import io
 import json
 import os
 import zipfile
+
 # import datetime
 from datetime import datetime
 from zoneinfo import ZoneInfo
-import copy
 
 import dataiku
-from dataikuapi import DSSClient
 from dataikuapi.utils import DataikuException
-
 
 # In[2]:
 
@@ -303,7 +301,7 @@ for project_key in project_keys:
     folder_options, folder_note = managed_folder_export_options(project)
     print(f"  managed folders {folder_note}")
 
-    export_file_path = '/tmp/{}.zip'.format(project_key)
+    export_file_path = f'/tmp/{project_key}.zip'
 
     # Export the project to a local file. DSS refuses exports above its max
     # export size, so on that error retry with progressively lighter options.
@@ -360,8 +358,7 @@ plugins_output_file_path = '/tmp/store_plugins.txt'
 
 # Write the plugin IDs to a text file
 with open(plugins_output_file_path, 'w') as output_file:
-    for plugin_id in store_plugins:
-        output_file.write(plugin_id + '\n')
+    output_file.writelines(plugin_id + '\n' for plugin_id in store_plugins)
 
 # Upload the text file to the managed folder
 with open(plugins_output_file_path, 'rb') as f:
@@ -454,7 +451,7 @@ try:
         export_folder_handle.upload_stream(f"list_connections_{export_timestamp}.json", f)
         os.remove(connections_output_filepath)
         
-    print(f"Connection details successfully exported to managed folder.")
+    print("Connection details successfully exported to managed folder.")
 
 except Exception as e:
     print(f"An error occurred: {e}")
@@ -495,10 +492,10 @@ def export_code_environments():
                 env_details = client.get_code_env(env_lang, env_name).get_definition()
                 code_envs_details.setdefault(env_lang, []).append(env_details)
             except Exception as e:
-                print(f"Error exporting {env_lang} environment {env_name}: {str(e)}")
+                print(f"Error exporting {env_lang} environment {env_name}: {e!s}")
         
         # Define output file name and path with timestamp
-        output_filename = f"code_environments_export.json"
+        output_filename = "code_environments_export.json"
         
         # Write code environment details to JSON file
         with open(output_filename, 'w') as file:
@@ -511,8 +508,8 @@ def export_code_environments():
         print(f"\nCode environment details successfully saved to {output_filename}")
     
     except Exception as e:
-        print(f"An error occurred during export: {str(e)}")
-        return None
+        print(f"An error occurred during export: {e!s}")
+        return
 
     
 export_code_environments()
@@ -633,8 +630,7 @@ for item in client.list_code_studio_templates():
     template_zip_path = f'/tmp/code_studio_template_{item.id}.zip'
     try:
         with open(template_zip_path, 'wb') as f:
-            for chunk in item.to_code_studio_template().get_export_stream().iter_content(chunk_size=32768):
-                f.write(chunk)
+            f.writelines(item.to_code_studio_template().get_export_stream().iter_content(chunk_size=32768))
         with open(template_zip_path, 'rb') as f:
             export_folder_handle.upload_stream(f'code_studio_template_{item.id}_{export_timestamp}.zip', f)
         print(f"Exported code studio template zip: {item.id}")
