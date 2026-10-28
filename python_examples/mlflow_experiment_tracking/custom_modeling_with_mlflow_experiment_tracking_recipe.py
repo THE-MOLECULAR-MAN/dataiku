@@ -134,8 +134,8 @@ hparams = {
 clf = RandomForestClassifier(**hparams)
 model_algo = type(clf).__name__
 run_params["model_algo"] = model_algo
-for hp in hparams:
-    run_params[hp] = hparams[hp]
+for hp, value in hparams.items():
+    run_params[hp] = value
 
 # --Which cross-validation settings to use?
 n_cv_folds = 5
